@@ -15,9 +15,8 @@ from common_setup import IssueConfig, IssueExperiment
 from perfect_heuristic import PerfectHeuristic
 
 DIR = os.path.dirname(os.path.abspath(__file__))
-SCRIPT_NAME = os.path.splitext(os.path.basename(__file__))[0]
 BENCHMARKS_DIR = os.environ["DOWNWARD_BENCHMARKS"]
-REVISIONS = ["ff-lmcut-comparison"]
+REVISIONS = ["ff-lmcut-comparison-v1"]
 BUILDS = ["release"]
 CONFIG_NICKS = [
     ('ipdb', ['--search', 'astar(ipdb(max_time=1200))']),
@@ -30,10 +29,7 @@ CONFIG_NICKS = [
 CONFIGS = [
     IssueConfig(
         config_nick,
-        config,
-        build_options=[build],
-        driver_options=["--build", build])
-    for build in BUILDS
+        config
     for config_nick, config in CONFIG_NICKS
 ]
 
