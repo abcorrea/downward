@@ -5,7 +5,7 @@ import itertools
 import os
 
 from lab.environments import LocalEnvironment, BaselSlurmEnvironment
-from lab.reports import Attribute, geometric_mean
+from lab.reports import Attribute, arithmetic_mean, geometric_mean
 
 from downward.reports.compare import ComparativeReport
 
@@ -29,7 +29,7 @@ CONFIG_NICKS = [
 CONFIGS = [
     IssueConfig(
         config_nick,
-        config
+        config)
     for config_nick, config in CONFIG_NICKS
 ]
 
@@ -64,7 +64,7 @@ ATTRIBUTES = [
     "coverage",
     "initial_h_value",
     "cost",
-    "diff_h_star"
+    Attribute("diff_h_star", function=geometric_mean)
 ]
 #attributes = exp.DEFAULT_TABLE_ATTRIBUTES
 #attributes.extend(extra_attributes)

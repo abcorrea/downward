@@ -124,12 +124,12 @@ def get_repo_base():
     """Get base directory of the repository, as an absolute path.
 
     Search upwards in the directory tree from the main script until a
-    directory with a subdirectory named ".hg" is found.
+    directory with a subdirectory named ".git" is found.
 
     Abort if the repo base cannot be found."""
     path = os.path.abspath(get_script_dir())
     while os.path.dirname(path) != path:
-        if os.path.exists(os.path.join(path, ".hg")):
+        if os.path.exists(os.path.join(path, ".git")):
             return path
         path = os.path.dirname(path)
     sys.exit("repo base could not be found")
@@ -345,7 +345,7 @@ class IssueExperiment(FastDownwardExperiment):
         self.add_step(
             "publish-comparison-tables", publish_comparison_tables)
 
-    def add_scatter_plot_step(self, relative=False, attributes=None):
+    def add_scatter_plot_step(self, attributes=None):
         """Add step creating (relative) scatter plots for all revision pairs.
 
         Create a scatter plot for each combination of attribute,
@@ -357,14 +357,10 @@ class IssueExperiment(FastDownwardExperiment):
             exp.add_scatter_plot_step(attributes=["expansions"])
 
         """
-        if relative:
-            report_class = RelativeScatterPlotReport
-            scatter_dir = os.path.join(self.eval_dir, "scatter-relative")
-            step_name = "make-relative-scatter-plots"
-        else:
-            report_class = ScatterPlotReport
-            scatter_dir = os.path.join(self.eval_dir, "scatter-absolute")
-            step_name = "make-absolute-scatter-plots"
+
+        report_class = ScatterPlotReport
+        scatter_dir = os.path.join(self.eval_dir, "scatter-absolute")
+        step_name = "make-absolute-scatter-plots"
         if attributes is None:
             attributes = self.DEFAULT_SCATTER_PLOT_ATTRIBUTES
 

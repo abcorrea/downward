@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 class PerfectHeuristic(object):
     """Compute the perfect heuristic from iPDB runs.
 
@@ -19,11 +21,11 @@ class PerfectHeuristic(object):
             cost = run.get("cost")
             if cost is not None:
                 assert run["coverage"]
-                self.tasks_to_costs[self._get_task(run)].append(cost)
+                self.tasks_to_costs[self._get_task(run)] = cost
         return True
 
     def add_diff_h_star(self, run):
         run["diff_h_star"] = self._compute_difference(
-            run.get("cost"), self.tasks_to_costs[self._get_task(run)]
+            run.get("initial_h_value"), self.tasks_to_costs[self._get_task(run)]
         )
         return run
