@@ -56,7 +56,7 @@ exp = common_setup.IssueExperiment(
 )
 
 TIME_LIMIT=1800
-MEMORY_LIMIT=8192
+MEMORY_LIMIT=2048
 
 
 for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
