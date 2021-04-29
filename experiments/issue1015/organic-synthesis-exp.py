@@ -57,7 +57,7 @@ for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
          task.domain_file, task.problem_file],
         time_limit=TIME_LIMIT,
         memory_limit=MEMORY_LIMIT,
-        soft_stderr_limit=1024)
+        soft_stderr_limit=10240)
     run.set_property('domain', task.domain)
     run.set_property('problem', task.problem)
     run.set_property('algorithm', 'translator')
