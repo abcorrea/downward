@@ -26,23 +26,17 @@ BENCHMARKS_DIR = os.environ["HTG_BENCHMARKS"]
 REPO = os.environ["DOWNWARD_REPO"]
 
 if common_setup.is_running_on_cluster():
-    SUITE = ['blocksworld-large-simple',
-             'childsnack-contents',
-             'genome-edit-distance',
+    SUITE = ['genome-edit-distance',
              'genome-edit-distance-positional',
              'genome-edit-distance-split',
              'logistics',
-             'logistics-large-simple',
              'organic-synthesis-alkene',
              'organic-synthesis-MIT',
              'organic-synthesis-original',
-             'pipesworld-tankage-nosplit',
-             'rovers-large-simple',
-             'scaling',
-             'visitall-multidimensional']
+             'pipesworld-tankage-nosplit']
     ENVIRONMENT = BaselSlurmEnvironment(
         partition="infai_2",
-        export=["PATH", "DOWNWARD_BENCHMARKS"],
+        export=["PATH", "HTG_BENCHMARKS"],
     )
 else:
     SUITE = ["organic-synthesis-alkene:p2.pddl",
