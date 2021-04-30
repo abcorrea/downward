@@ -26,8 +26,8 @@ BENCHMARKS_DIR = os.environ["DOWNWARD_BENCHMARKS"]
 REPO = os.environ["DOWNWARD_REPO"]
 
 if common_setup.is_running_on_cluster():
-    SUITE = ["organic-synthesis-opt18-strips",
-             "organic-synthesis-sat18-strips"]
+    SUITE = ["organic-synthesis-opt18-strips:p11.pddl",
+             "organic-synthesis-opt18-strips:p12.pddl"]
     ENVIRONMENT = BaselSlurmEnvironment(
         partition="infai_2",
         export=["PATH", "DOWNWARD_BENCHMARKS"],
@@ -44,7 +44,7 @@ exp = common_setup.IssueExperiment(
 )
 
 TIME_LIMIT=1800
-MEMORY_LIMIT=2048
+MEMORY_LIMIT=3584
 
 
 for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
@@ -53,11 +53,12 @@ for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
     run.add_resource('problem', task.problem_file, symlink=True)
     run.add_command(
         'run-translator',
-        [REPO+'/builds/release/bin/translate/translate.py',
+        ["strace", REPO+'/builds/release/bin/translate/translate.py',
          task.domain_file, task.problem_file],
         time_limit=TIME_LIMIT,
         memory_limit=MEMORY_LIMIT,
-        soft_stderr_limit=10240)
+        soft_stderr_limit=10240 * 10,
+        hard_stderr_limit=10240 * 10)
     run.set_property('domain', task.domain)
     run.set_property('problem', task.problem)
     run.set_property('algorithm', 'translator')
