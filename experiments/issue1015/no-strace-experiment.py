@@ -53,7 +53,7 @@ for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
     run.add_resource('problem', task.problem_file, symlink=True)
     run.add_command(
         'run-translator',
-        ["strace", REPO+'/builds/release/bin/translate/translate.py',
+        [REPO+'/builds/release/bin/translate/translate.py',
          task.domain_file, task.problem_file],
         time_limit=TIME_LIMIT,
         memory_limit=MEMORY_LIMIT,
