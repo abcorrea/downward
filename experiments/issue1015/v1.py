@@ -12,15 +12,33 @@ from lab.reports import Attribute
 from lab.environments import LocalEnvironment, BaselSlurmEnvironment
 
 from downward import suites
-
+from downward.experiment import FastDownwardExperiment
 from downward.reports.absolute import AbsoluteReport
 
 REVISIONS = ["main"]
 
-CONFIGS = [
-        IssueConfig("translate", [],
-                driver_options=[]),
-]
+CONFIGS = []
+
+class ModifiedIssueExperiment(IssueExperiment):
+    
+    def __init__(self, revisions=None, configs=None, path=None, **kwargs):
+        IssueExperiment.__init__(self, revisions, configs, path, **kwargs)
+
+    def _add_runs(self):
+        """
+            From https://lab.readthedocs.io/en/stable/downward.tutorial.html#id2
+        """
+        FastDownwardExperiment._add_runs(self)
+        for run in self.runs:
+            command = run.commands["planner"]
+            # Slightly raise soft limit for output to stdout.
+            command[1]["soft_stdout_limit"] = 100 * 1024
+            command[1]["hard_stdout_limit"] = 100 * 1024
+
+
+for i in range(5):
+    CONFIGS.append(IssueConfig("translate-"+str(i), ["--search-option", str(i)],
+                               driver_options=["--translate"]))
 
 BENCHMARKS_DIR = os.environ["HTG_BENCHMARKS"]
 REPO = os.environ["DOWNWARD_REPO"]
@@ -43,35 +61,18 @@ else:
              "organic-synthesis-alkene:p5.pddl"]
     ENVIRONMENT = LocalEnvironment(processes=2)
 
-exp = common_setup.IssueExperiment(
+exp = ModifiedIssueExperiment(
     revisions=REVISIONS,
     configs=CONFIGS,
     environment=ENVIRONMENT,
 )
 
-TIME_LIMIT=1800
-MEMORY_LIMIT=2048
+exp.add_suite(BENCHMARKS_DIR, SUITE)
 
-
-for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
-    run = exp.add_run()
-    run.add_resource('domain', task.domain_file, symlink=True)
-    run.add_resource('problem', task.problem_file, symlink=True)
-    run.add_command(
-        'run-translator',
-        ["strace", REPO+'/builds/release/bin/translate/translate.py',
-         task.domain_file, task.problem_file],
-        time_limit=TIME_LIMIT,
-        memory_limit=MEMORY_LIMIT,
-        soft_stderr_limit=10240)
-    run.set_property('domain', task.domain)
-    run.set_property('problem', task.problem)
-    run.set_property('algorithm', 'translator')
-    run.set_property('revision', "main")
-    run.set_property('id', [task.domain, task.problem])
-
-
-#exp.add_suite(BENCHMARKS_DIR, SUITE)
+for run in exp.runs:
+    command = run.commands["planner"]
+    command[1]["soft_stdout_limit"] = 1024 * 100
+    command[1]["hard_stdout_limit"] = 1024 * 100
 
 exp.add_parser(exp.TRANSLATOR_PARSER)
 ATTRIBUTES = [

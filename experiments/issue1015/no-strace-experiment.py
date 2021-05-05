@@ -19,7 +19,7 @@ REVISIONS = ["main"]
 
 CONFIGS = [
         IssueConfig("translate", [],
-                driver_options=[]),
+                driver_options=["--translate"]),
 ]
 
 BENCHMARKS_DIR = os.environ["DOWNWARD_BENCHMARKS"]
@@ -47,26 +47,26 @@ TIME_LIMIT=1800
 MEMORY_LIMIT=3584
 
 
-for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
-    run = exp.add_run()
-    run.add_resource('domain', task.domain_file, symlink=True)
-    run.add_resource('problem', task.problem_file, symlink=True)
-    run.add_command(
-        'run-translator',
-        [REPO+'/builds/release/bin/translate/translate.py',
-         task.domain_file, task.problem_file],
-        time_limit=TIME_LIMIT,
-        memory_limit=MEMORY_LIMIT,
-        soft_stderr_limit=10240 * 10,
-        hard_stderr_limit=10240 * 10)
-    run.set_property('domain', task.domain)
-    run.set_property('problem', task.problem)
-    run.set_property('algorithm', 'translator')
-    run.set_property('revision', "main")
-    run.set_property('id', [task.domain, task.problem])
+# for task in suites.build_suite(BENCHMARKS_DIR, SUITE):
+#     run = exp.add_run()
+#     run.add_resource('domain', task.domain_file, symlink=True)
+#     run.add_resource('problem', task.problem_file, symlink=True)
+#     run.add_command(
+#         'run-translator',
+#         [REPO+'/builds/release/bin/translate/translate.py',
+#          task.domain_file, task.problem_file],
+#         time_limit=TIME_LIMIT,
+#         memory_limit=MEMORY_LIMIT,
+#         soft_stderr_limit=10240 * 10,
+#         hard_stderr_limit=10240 * 10)
+#     run.set_property('domain', task.domain)
+#     run.set_property('problem', task.problem)
+#     run.set_property('algorithm', 'translator')
+#     run.set_property('revision', "main")
+#     run.set_property('id', [task.domain, task.problem])
 
 
-#exp.add_suite(BENCHMARKS_DIR, SUITE)
+exp.add_suite(BENCHMARKS_DIR, SUITE)
 
 exp.add_parser(exp.TRANSLATOR_PARSER)
 ATTRIBUTES = [
