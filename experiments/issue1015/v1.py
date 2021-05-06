@@ -15,7 +15,7 @@ from downward import suites
 from downward.experiment import FastDownwardExperiment
 from downward.reports.absolute import AbsoluteReport
 
-REVISIONS = ["main"]
+REVISIONS = ["issue1015"]
 
 CONFIGS = []
 
